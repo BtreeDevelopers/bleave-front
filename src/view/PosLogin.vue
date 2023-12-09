@@ -23,7 +23,7 @@ const user = computed(() => {
 const loginApi = async (userId: string, token: string) => {
   const data = await apibleave.login({ userId, token });
   userStore.email = data.email;
-  userStore.token = data.token_planeja; //TODO MUDAR
+  userStore.token = data.token_bleave;
   userStore.token_bauth = data.token_bauth;
   userStore.userId = data._id;
   userStore.name = data.nome;
@@ -34,6 +34,7 @@ const loginApi = async (userId: string, token: string) => {
 
 const login = async () => {
   loading.value = true;
+  console.log(user.value)
   if (Object.keys(user.value).length) {
 
     await loginApi(user.value.userId, user.value.token);

@@ -4,12 +4,12 @@ class authService extends AxiosCall {
   url;
   constructor() {
     super();
-    this.url = "/user";
+    this.url = "bleave";
   }
   login(data: any) {
     return this.axiosCall2({
       method: "post",
-      url: `user/auth`,
+      url: `${this.url}/login`,
       data,
     });
   }
