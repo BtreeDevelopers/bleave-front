@@ -9,6 +9,7 @@ env:
   VUE_APP_BAUTH: ${{ vars.DEV_VUE_APP_BAUTH }}
   VUE_APP_IV_CRYPTO: ${{ vars.DEV_VUE_APP_IV_CRYPTO }}
   VUE_APP_SECRET_CRYPTO: ${{ vars.DEV_VUE_APP_SECRET_CRYPTO }}
+  VUE_APP_SECRET: ${{ vars.DEV_VUE_APP_SECRET }}
 "on":
   push:
     branches:
