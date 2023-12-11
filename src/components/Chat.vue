@@ -7,6 +7,14 @@ import { useDisplay } from "vuetify";
 const { mobile } = useDisplay();
 
 const listChat = ref<HTMLElement | null>(null);
+
+const props = defineProps<{
+  nome: string;
+  chatid: string;
+  imagem: string;
+  mensagens: any[];
+}>();
+
 onMounted(() => {
   listChat.value!.scrollTop = listChat.value!.scrollHeight;
 });
@@ -29,11 +37,11 @@ onMounted(() => {
           width="40px"
           height="40px"
           class="rounded-circle"
-          src="https://storage.googleapis.com/btreeauth.appspot.com/64a6b96210e294a1c7cd736c.jpg"
+          :src="props.imagem"
         />
       </VBadge>
       <div>
-        <p class="text-h6">Lucas Neto</p>
+        <p class="text-h6">{{ props.nome }}</p>
         <p class="text-subtitle-2 text-gray1">Online</p>
       </div>
     </div>
@@ -42,24 +50,8 @@ onMounted(() => {
 
   <p class="text-subtitle-2 text-gray1 text-center mr-5 my-2">15 de Agosto</p>
   <div class="overflow-auto px-2 px-md-16 py-2 h-100" ref="listChat">
-    <Balloon></Balloon>
-    <MyBalloon></MyBalloon>
-    <Balloon></Balloon>
-    <MyBalloon></MyBalloon>
-    <Balloon></Balloon>
-    <MyBalloon></MyBalloon>
-    <Balloon></Balloon>
-    <MyBalloon></MyBalloon>
-    <Balloon></Balloon>
-    <MyBalloon></MyBalloon>
-    <Balloon></Balloon>
-    <MyBalloon></MyBalloon>
-    <Balloon></Balloon>
-    <MyBalloon></MyBalloon>
-    <Balloon></Balloon>
-    <MyBalloon></MyBalloon>
-    <Balloon></Balloon>
-    <MyBalloon></MyBalloon>
+    <Balloon v-for="msg in props.mensagens" :key="msg._id"></Balloon>
+    <!-- <MyBalloon></MyBalloon> -->
   </div>
   <div class="d-flex mx-n4 mx-sm-0">
     <VBtn

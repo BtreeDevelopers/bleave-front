@@ -15,6 +15,16 @@ class authService extends AxiosCall {
       },
     });
   }
+  getUsers(data: { listArray: string[] }): Promise<{ user: any[] }> {
+    return this.axiosCall({
+      method: "post",
+      url: `/user/list`,
+      data,
+      headers: {
+        secret: process.env.VUE_APP_SECRET,
+      },
+    });
+  }
 }
 
 export const apiService = new authService();
