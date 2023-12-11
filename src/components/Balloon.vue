@@ -1,21 +1,38 @@
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
+import { computed } from "vue";
 
 const { mobile } = useDisplay();
+
+const props = defineProps<{
+  texto: string;
+  time: string;
+  imagem: string;
+}>();
+
+const formateDate = computed(() => {
+  const data = new Date(props.time);
+  const horaFormatada = data.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return horaFormatada;
+});
 </script>
 
 <template>
   <div>
-    <p class="text-subtitle-2 text-gray1 ml-16">09:00</p>
+    <p class="text-subtitle-2 text-gray1 ml-16">{{ formateDate }}</p>
     <div class="d-flex">
       <img
         width="40px"
         height="40px"
         class="rounded-circle mr-2"
-        src="https://storage.googleapis.com/btreeauth.appspot.com/64a6b96210e294a1c7cd736c.jpg"
+        :src="imagem"
       />
       <div class="balao">
         <svg
+          style="margin-right: -2px"
           width="15"
           height="13"
           viewBox="0 0 15 13"
@@ -35,7 +52,7 @@ const { mobile } = useDisplay();
             width: mobile ? '240px' : '260px',
           }"
         >
-          texto texto
+          {{ texto }}
         </div>
       </div>
     </div>

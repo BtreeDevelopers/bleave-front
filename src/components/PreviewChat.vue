@@ -35,7 +35,9 @@ withDefaults(
         </VBadge>
         <div>
           <p class="text-h6">{{ nome }}</p>
-          <p class="text-subtitle-2 text-gray1" v-if="ultima">{{ ultima }}</p>
+          <p class="text-subtitle-2 text-gray1" v-if="ultima">
+            {{ ultima }}
+          </p>
         </div>
       </div>
       <div

@@ -1,12 +1,27 @@
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
+import { computed } from "vue";
 
 const { mobile } = useDisplay();
+
+const props = defineProps<{
+  texto: string;
+  time: string;
+}>();
+
+const formateDate = computed(() => {
+  const data = new Date(props.time);
+  const horaFormatada = data.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return horaFormatada;
+});
 </script>
 
 <template>
   <div class="d-flex flex-column align-end">
-    <p class="text-subtitle-2 text-gray1 text-end mr-5">09:00</p>
+    <p class="text-subtitle-2 text-gray1 text-end mr-5">{{ formateDate }}</p>
 
     <div class="balao">
       <div
@@ -16,7 +31,7 @@ const { mobile } = useDisplay();
           width: mobile ? '240px' : '260px',
         }"
       >
-        texto texto
+        {{ texto }}
       </div>
       <svg
         width="15"
@@ -24,6 +39,7 @@ const { mobile } = useDisplay();
         viewBox="0 0 15 13"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        style="margin-left: -2px"
       >
         <path
           d="M14.1006 3.61011L3.1864 11.6521C1.86587 12.6251 0 11.6823 0 10.042V2C0 0.895431 0.895432 0 2 0H12.9142C14.8448 0 15.6548 2.46487 14.1006 3.61011Z"

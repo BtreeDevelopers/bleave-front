@@ -13,6 +13,13 @@ class authService extends AxiosCall {
       data,
     });
   }
+  csrf(data: any) {
+    return this.axiosCall2({
+      method: "post",
+      url: `${this.url}/login/csrf`,
+      data,
+    });
+  }
 }
 
 export const apibleave = new authService();

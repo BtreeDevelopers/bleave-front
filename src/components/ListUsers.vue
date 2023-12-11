@@ -43,16 +43,9 @@ watch(
       return;
     }
     loading.value = true;
-    debounce(function () {
-      //bater na API bAuth buscando o email
-      const data = {
-        _id: "64a376fe3f329afa140b444f",
-        nome: "Thalys Marques",
-        imagemUrl:
-          "https://storage.googleapis.com/btreeauthdev.appspot.com/64a376fe3f329afa140b444f.jpg",
-        email: "thalyscorreia@hotmail.com",
-      };
-      userBuscado.value = data;
+    debounce(async function () {
+      const data = await apiService.getUser(busca.value, userStore.token_bauth);
+      userBuscado.value = data.user[0];
       loading.value = false;
     }, 500)();
   }
@@ -63,14 +56,15 @@ const iniciarChat = async (userId: string) => {
     membros: [userId],
   };
   const conversa = await apiConversas.iniciarConversa(payload);
-  const users = await obterUsuarios(conversa.converas.membros);
-  conversa.converas.membros = users.user;
-  listaConversas.value.unshift(conversa.converas);
+  const users = await obterUsuarios(conversa.conversas.membros);
+  conversa.conversas.membros = users.user;
+  listaConversas.value.unshift(conversa.conversas);
   busca.value = "";
-  emit("selecionarConversa", conversa.converas);
+  emit("selecionarConversa", conversa.conversas);
 };
 const outroMembro = (conversa: any): { nome: string; imagemUrl: string } => {
-  if (conversa.membros.length > 2) return conversa.nomeChat;
+  if (conversa.membros.length > 2)
+    return { nome: conversa.nomeChat, imagemUrl: "" };
   const chat = conversa.membros.filter(
     (el: any) => el._id !== userStore.userId
   );
@@ -88,20 +82,20 @@ onMounted(async () => {
   const conversas = await apiConversas.obterConversas();
   const todosMembros = [
     ...new Set<string>(
-      conversas.converas.reduce((lista: string[], value: any) => {
+      conversas.conversas.reduce((lista: string[], value: any) => {
         lista.push(...value.membros);
         return lista;
       }, [])
     ),
   ];
   const users = await obterUsuarios(todosMembros);
-  conversas.converas.forEach((el: any) => {
+  conversas.conversas.forEach((el: any) => {
     const membros = el.membros.map((mb: string) =>
       users.user.find((user) => user._id === mb)
     );
     el.membros = membros;
   });
-  listaConversas.value = conversas.converas;
+  listaConversas.value = conversas.conversas;
   loading.value = false;
 });
 </script>
@@ -148,7 +142,7 @@ onMounted(async () => {
       :imagem="outroMembro(conversa).imagemUrl"
       :ultima="
         conversa.mensagens.length
-          ? conversa.mensagens[conversa.mensagens.length - 1]
+          ? conversa.mensagens[conversa.mensagens.length - 1].texto
           : '-'
       "
       @click="emit('selecionarConversa', conversa)"

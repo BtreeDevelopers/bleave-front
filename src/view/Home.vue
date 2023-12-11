@@ -4,6 +4,7 @@ import Chat from "@/components/Chat.vue";
 import { useDisplay } from "vuetify";
 import { ref } from "vue";
 import { useUserStore } from "@/stores/user";
+import { apiConversas } from "@/service/conversas";
 
 const userStore = useUserStore();
 
@@ -11,17 +12,32 @@ const { mobile } = useDisplay();
 
 const conversa = ref<any>(null);
 
-const selecionarConversa = (cv: any) => {
-  console.log(cv);
-  conversa.value = cv;
+const selecionarConversa = async (cv: any) => {
+  const conversas = await apiConversas.obterConversas();
+  const newCv = conversas.conversas.find((cvs: any) => cvs._id === cv._id);
+  newCv.mensagens.forEach((element: any) => {
+    element.sender = cv.membros.find((el: any) => el._id === element.idSender);
+  });
+
+  conversa.value = { ...cv, mensagens: newCv.mensagens };
 };
 
 const outroMembro = (conversa: any): { nome: string; imagemUrl: string } => {
-  if (conversa.membros.length > 2) return conversa.nomeChat;
+  if (conversa.membros.length > 2)
+    return { nome: conversa.nomeChat, imagemUrl: "" };
   const chat = conversa.membros.filter(
     (el: any) => el._id !== userStore.userId
   );
   return chat[0];
+};
+
+const adicionarMensagem = (mensagem: any) => {
+  conversa.value.mensagens.push({
+    ...mensagem,
+    sender: conversa.value.membros.find(
+      (el: any) => el._id === mensagem.idSender
+    ),
+  });
 };
 </script>
 
@@ -42,6 +58,7 @@ const outroMembro = (conversa: any): { nome: string; imagemUrl: string } => {
           :imagem="outroMembro(conversa).imagemUrl"
           :mensagens="conversa.mensagens"
           :nome="outroMembro(conversa).nome"
+          @adicionarMensagem="adicionarMensagem"
           v-if="conversa"
         ></Chat>
         <div v-else class="d-flex align-center justify-center h-100">
