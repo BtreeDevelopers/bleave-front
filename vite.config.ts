@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
   envObj["VUE_APP_SECRET_CRYPTO"] = env.VUE_APP_SECRET_CRYPTO;
   envObj["VUE_APP_IV_CRYPTO"] = env.VUE_APP_IV_CRYPTO;
   envObj["VUE_APP_API_URL"] = env.VUE_APP_API_URL;
+  envObj["VUE_APP_SECRET"] = env.VUE_APP_SECRET;
   return {
     plugins: [vue()],
     resolve: {

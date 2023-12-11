@@ -1,7 +1,18 @@
 <script setup lang="ts">
-defineProps<{
-  selected: boolean;
-}>();
+withDefaults(
+  defineProps<{
+    selected?: boolean;
+    nome: string;
+    imagem: string;
+    mensagens?: number;
+    ultima?: string;
+  }>(),
+  {
+    mensagens: 0,
+    ultima: "",
+    selected: false,
+  }
+);
 </script>
 
 <template>
@@ -19,19 +30,20 @@ defineProps<{
             width="40px"
             height="40px"
             class="rounded-circle"
-            src="https://storage.googleapis.com/btreeauth.appspot.com/64a6b96210e294a1c7cd736c.jpg"
+            :src="imagem"
           />
         </VBadge>
         <div>
-          <p class="text-h6">Lucas Neto</p>
-          <p class="text-subtitle-2 text-gray1">Olá, como você está? • 2m</p>
+          <p class="text-h6">{{ nome }}</p>
+          <p class="text-subtitle-2 text-gray1" v-if="ultima">{{ ultima }}</p>
         </div>
       </div>
       <div
+        v-if="mensagens > 0"
         class="bg-primary text-caption d-flex align-center justify-center rounded-circle font-weight-medium"
         style="height: 22px; width: 22px"
       >
-        <span> 5 </span>
+        <span> {{ mensagens }} </span>
       </div>
     </div>
   </VCard>
