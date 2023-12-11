@@ -115,7 +115,11 @@ onMounted(async () => {
           height="40px"
           class="rounded-circle"
           :src="props.imagem"
+          v-if="props.imagem"
         />
+        <v-icon else size="45px" class="rounded-circle" color="primary" v-else
+          >$UserCircleIcon</v-icon
+        >
       </VBadge>
       <div>
         <p class="text-h6">{{ props.nome }}</p>

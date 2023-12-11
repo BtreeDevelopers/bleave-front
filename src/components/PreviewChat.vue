@@ -31,7 +31,11 @@ withDefaults(
             height="40px"
             class="rounded-circle"
             :src="imagem"
+            v-if="imagem"
           />
+          <v-icon v-else size="45px" class="rounded-circle" color="primary"
+            >$UserCircleIcon</v-icon
+          >
         </VBadge>
         <div>
           <p class="text-h6">{{ nome }}</p>

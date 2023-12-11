@@ -29,7 +29,11 @@ const formateDate = computed(() => {
         height="40px"
         class="rounded-circle mr-2"
         :src="imagem"
+        v-if="imagem"
       />
+      <v-icon size="45px" class="rounded-circle" color="primary" v-else
+        >$UserCircleIcon</v-icon
+      >
       <div class="balao">
         <svg
           style="margin-right: -2px"
