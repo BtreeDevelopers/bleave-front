@@ -6,7 +6,7 @@ const { mobile } = useDisplay();
 
 const props = defineProps<{
   texto: string;
-  time: string;
+  time: string | number;
   showImagem?: boolean;
 }>();
 

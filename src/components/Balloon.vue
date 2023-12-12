@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 const { mobile } = useDisplay();
-
+const MAX_CARACTERES = 430;
 const props = defineProps<{
   texto: string;
-  time: string;
+  time: string | number;
   imagem: string;
   showImagem?: boolean;
 }>();
 
+const lerTudo = ref(false);
 const formateDate = computed(() => {
   const data = new Date(props.time);
   const horaFormatada = data.toLocaleTimeString("pt-BR", {
@@ -60,13 +61,29 @@ const formateDate = computed(() => {
         </svg>
 
         <div
-          class="rounded rounded-ts-0 bg-background2 pa-2 text-caption"
-          style="min-height: 50px; word-break: break-all"
+          class="rounded rounded-ts-0 bg-background2 pa-2"
+          style="min-height: 50px; word-break: break-all; font-size: 12px"
           :style="{
             width: mobile ? '240px' : '260px',
           }"
         >
-          {{ texto }}
+          <template v-if="!lerTudo">
+            <span>
+              {{ texto.substring(0, MAX_CARACTERES) }}
+            </span>
+            <span v-if="texto.length > MAX_CARACTERES">
+              ...
+              <span
+                style="cursor: pointer"
+                class="text-primary"
+                @click="lerTudo = true"
+                >Leia mais</span
+              >
+            </span>
+          </template>
+          <p v-else>
+            {{ texto }}
+          </p>
         </div>
       </div>
     </div>

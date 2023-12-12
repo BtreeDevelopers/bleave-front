@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Balloon from "./Balloon.vue";
 import MyBalloon from "./MyBalloon.vue";
 import { useDisplay } from "vuetify";
@@ -21,7 +21,16 @@ enum ListStatus {
 const statusWS = ref(ListStatus.closed);
 const conexao = ref<Conection | null>(null);
 
+const MAXCARACTERES = 6000;
+
 const mensagem = ref("");
+watch(
+  () => mensagem.value,
+  () => {
+    if (mensagem.value.length > MAXCARACTERES)
+      mensagem.value = mensagem.value.substring(0, MAXCARACTERES);
+  }
+);
 const wsid = ref("");
 
 const props = defineProps<{

@@ -6,7 +6,7 @@ const props = withDefaults(
   defineProps<{
     selected?: boolean;
     nome: string;
-    imagem: string;
+    imagem?: string;
     mensagens?: number;
     ultima?: { texto: string; idSender: string; timestamps: string };
   }>(),
@@ -98,7 +98,7 @@ const duracao = computed(() => {
                   overflow: hidden;
                   white-space: nowrap;
                   text-overflow: ellipsis;
-                  max-width: 120px;
+                  max-width: 100px;
                 "
               >
                 {{ ultima.texto }}

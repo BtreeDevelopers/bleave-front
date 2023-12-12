@@ -16,6 +16,21 @@ const { mobile } = useDisplay();
 
 const conversa = ref<any>(null);
 
+const reordenarChats = () => {
+  const cvs = [...chatStore.conversas];
+  const selecionadoId = cvs[chatStore.atual!]._id;
+  cvs.sort((a, b) => {
+    if (!a.mensagens.length) return -1;
+    if (!b.mensagens.length) return 1;
+    const MenA = new Date(a.mensagens[a.mensagens.length - 1].timestamps);
+    const MenB = new Date(b.mensagens[b.mensagens.length - 1].timestamps);
+    return MenB.getTime() - MenA.getTime();
+  });
+  const novaPos = cvs.findIndex((el) => el._id === selecionadoId);
+  chatStore.conversas = cvs;
+  chatStore.atual = novaPos;
+};
+
 const selecionarConversa = async (cv: number) => {
   chatStore.atual = cv;
   const chatSelecionado = chatStore.conversas[chatStore.atual];
@@ -50,6 +65,7 @@ const adicionarMensagem = (mensagem: any) => {
   };
   chatStore.conversas[chatStore.atual!].mensagens.push(novaMgs);
   conversa.value.mensagens.push(novaMgs);
+  reordenarChats();
 };
 </script>
 
