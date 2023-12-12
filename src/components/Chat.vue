@@ -166,7 +166,7 @@ onMounted(async () => {
   <div class="d-flex mx-n4 mx-sm-0">
     <VBtn
       color="background2"
-      class="mx-1"
+      class="ml-1"
       rounded="0"
       height="40"
       v-if="!mobile"

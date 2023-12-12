@@ -31,8 +31,8 @@ const formateDate = computed(() => {
 
     <div class="balao">
       <div
-        class="rounded rounded-te-0 bg-primary pa-2 text-caption"
-        style="min-height: 50px; word-break: break-all"
+        class="rounded rounded-te-0 pa-2 text-caption"
+        style="min-height: 50px; word-break: break-all; background: #273d64"
         :style="{
           width: mobile ? '240px' : '260px',
         }"
@@ -50,7 +50,7 @@ const formateDate = computed(() => {
       >
         <path
           d="M14.1006 3.61011L3.1864 11.6521C1.86587 12.6251 0 11.6823 0 10.042V2C0 0.895431 0.895432 0 2 0H12.9142C14.8448 0 15.6548 2.46487 14.1006 3.61011Z"
-          fill="#5093FE"
+          fill="#273D64"
         />
       </svg>
     </div>
