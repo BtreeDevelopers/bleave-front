@@ -6,6 +6,7 @@ import { useDisplay } from "vuetify";
 import { Conection } from "@/service/ws";
 import { apibleave } from "@/service";
 import { useUserStore } from "@/stores/user";
+import notificacao from "@/assets/notificacao.mp3";
 
 const userStore = useUserStore();
 
@@ -57,6 +58,8 @@ const eventsWS = () => {
           texto: data.texto,
           idSender: data.idSender,
         };
+        var audio = new Audio(notificacao);
+        audio.play();
         emit("adicionarMensagem", payload);
         setTimeout(() => {
           scrollEnd();
