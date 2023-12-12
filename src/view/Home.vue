@@ -16,6 +16,8 @@ const { mobile } = useDisplay();
 
 const conversa = ref<any>(null);
 
+const loading = ref(false);
+
 const reordenarChats = () => {
   const cvs = [...chatStore.conversas];
   const selecionadoId = cvs[chatStore.atual!]._id;
@@ -32,6 +34,7 @@ const reordenarChats = () => {
 };
 
 const selecionarConversa = async (cv: number) => {
+  loading.value = true;
   chatStore.atual = cv;
   const chatSelecionado = chatStore.conversas[chatStore.atual];
   const conversas = await apiConversas.obterConversas();
@@ -45,6 +48,7 @@ const selecionarConversa = async (cv: number) => {
   });
   telaChats.value = false;
   conversa.value = { ...chatSelecionado, mensagens: newCv.mensagens };
+  loading.value = false;
 };
 
 const outroMembro = (conversa: any): { nome: string; imagemUrl: string } => {
@@ -85,13 +89,35 @@ const adicionarMensagem = (mensagem: any) => {
         style="max-height: 100%"
         v-if="!mobile || (mobile && !telaChats)"
       >
+        <div v-if="loading" class="d-flex align-center justify-center h-100">
+          <div class="relative" style="width: 70px; height: 70px">
+            <div class="absolute">
+              <v-progress-circular
+                value="100"
+                class="absolute"
+                color="black"
+                size="70"
+                width="7"
+              ></v-progress-circular>
+            </div>
+            <div class="absolute">
+              <v-progress-circular
+                indeterminate
+                class="absolute"
+                color="primary"
+                size="70"
+                width="7"
+              ></v-progress-circular>
+            </div>
+          </div>
+        </div>
         <Chat
           :chatid="conversa._id"
           :imagem="outroMembro(conversa).imagemUrl"
           :mensagens="conversa.mensagens"
           :nome="outroMembro(conversa).nome"
           @adicionarMensagem="adicionarMensagem"
-          v-if="conversa"
+          v-else-if="conversa"
           @voltar="telaChats = true"
         ></Chat>
         <div v-else class="d-flex align-center justify-center h-100">
