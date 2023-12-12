@@ -105,6 +105,7 @@ onMounted(async () => {
   <p class="text-h5 font-weight-bold ml-6 my-5">Conversas</p>
   <div>
     <VTextField
+      flat
       variant="solo"
       bg-color="background"
       prepend-inner-icon="$MagnifyingGlassIcon"
@@ -146,6 +147,7 @@ onMounted(async () => {
           ? conversa.mensagens[conversa.mensagens.length - 1]
           : undefined
       "
+      :selected="chatStore.atual === index"
       @click="emit('selecionarConversa', index)"
     ></PreviewChat>
   </div>
