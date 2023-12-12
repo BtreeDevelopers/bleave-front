@@ -26,7 +26,7 @@ const formateDate = computed(() => {
     <div class="balao">
       <div
         class="rounded rounded-te-0 bg-primary pa-2"
-        style="min-height: 50px"
+        style="min-height: 50px; word-break: break-all"
         :style="{
           width: mobile ? '240px' : '260px',
         }"
