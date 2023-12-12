@@ -51,7 +51,7 @@ const formateDate = computed(() => {
 
         <div
           class="rounded rounded-ts-0 bg-background2 pa-2"
-          style="min-height: 50px"
+          style="min-height: 50px; word-break: break-all"
           :style="{
             width: mobile ? '240px' : '260px',
           }"

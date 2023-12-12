@@ -8,6 +8,8 @@ import { apiConversas } from "@/service/conversas";
 
 const userStore = useUserStore();
 
+const telaChats = ref(true);
+
 const { mobile } = useDisplay();
 
 const conversa = ref<any>(null);
@@ -18,7 +20,7 @@ const selecionarConversa = async (cv: any) => {
   newCv.mensagens.forEach((element: any) => {
     element.sender = cv.membros.find((el: any) => el._id === element.idSender);
   });
-
+  telaChats.value = false;
   conversa.value = { ...cv, mensagens: newCv.mensagens };
 };
 
@@ -45,14 +47,18 @@ const adicionarMensagem = (mensagem: any) => {
   <VContainer fluid class="h-screen">
     <VRow class="h-100" style="margin: 0">
       <VCol
-        cols="4"
-        v-if="!mobile"
+        :cols="mobile ? 12 : 4"
+        v-if="!mobile || (mobile && telaChats)"
         class="pa-0 bg-background2 d-flex flex-column"
         style="max-height: 100%"
       >
         <ListUsers @selecionarConversa="selecionarConversa"></ListUsers>
       </VCol>
-      <VCol class="pa-0 d-flex flex-column" style="max-height: 100%">
+      <VCol
+        class="pa-0 d-flex flex-column"
+        style="max-height: 100%"
+        v-if="!mobile || (mobile && !telaChats)"
+      >
         <Chat
           :chatid="conversa._id"
           :imagem="outroMembro(conversa).imagemUrl"
@@ -60,6 +66,7 @@ const adicionarMensagem = (mensagem: any) => {
           :nome="outroMembro(conversa).nome"
           @adicionarMensagem="adicionarMensagem"
           v-if="conversa"
+          @voltar="telaChats = true"
         ></Chat>
         <div v-else class="d-flex align-center justify-center h-100">
           <p>Inicie uma nova conversa</p>

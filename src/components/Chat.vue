@@ -30,7 +30,7 @@ const props = defineProps<{
   mensagens: any[];
 }>();
 
-const emit = defineEmits(["adicionarMensagem"]);
+const emit = defineEmits(["adicionarMensagem", "voltar"]);
 const eventsWS = () => {
   conexao.value!.ws.addEventListener("open", () => {
     statusWS.value = ListStatus.open;
@@ -106,7 +106,12 @@ onMounted(async () => {
     style="min-height: 72px"
   >
     <div class="d-flex align-center">
-      <VIcon v-if="mobile" color="white" size="24" class="mx-3" @click=""
+      <VIcon
+        v-if="mobile"
+        color="white"
+        size="24"
+        class="mx-3"
+        @click="emit('voltar')"
         >$ChevronLeftIcon</VIcon
       >
       <VBadge color="success" dot location="bottom end" class="mr-3">

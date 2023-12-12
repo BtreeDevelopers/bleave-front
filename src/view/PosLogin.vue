@@ -32,7 +32,6 @@ const loginApi = async (userId: string, token: string) => {
 
 const login = async () => {
   loading.value = true;
-  console.log(user.value);
   if (Object.keys(user.value).length) {
     await loginApi(user.value.userId, user.value.token);
   } else {
