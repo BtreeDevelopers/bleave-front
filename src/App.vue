@@ -10,7 +10,7 @@
 
 <style>
 .main-bleave {
-  max-width: 1280px !important;
+  max-width: 1400px !important;
   margin-left: auto;
   margin-right: auto;
   width: 100%;

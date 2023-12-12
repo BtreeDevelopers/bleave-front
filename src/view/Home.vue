@@ -5,7 +5,9 @@ import { useDisplay } from "vuetify";
 import { ref } from "vue";
 import { useUserStore } from "@/stores/user";
 import { apiConversas } from "@/service/conversas";
+import { useChatStore } from "@/stores/chats";
 
+const chatStore = useChatStore();
 const userStore = useUserStore();
 
 const telaChats = ref(true);
@@ -14,14 +16,20 @@ const { mobile } = useDisplay();
 
 const conversa = ref<any>(null);
 
-const selecionarConversa = async (cv: any) => {
+const selecionarConversa = async (cv: number) => {
+  chatStore.atual = cv;
+  const chatSelecionado = chatStore.conversas[chatStore.atual];
   const conversas = await apiConversas.obterConversas();
-  const newCv = conversas.conversas.find((cvs: any) => cvs._id === cv._id);
+  const newCv = conversas.conversas.find(
+    (cvs: any) => cvs._id === chatSelecionado._id
+  );
   newCv.mensagens.forEach((element: any) => {
-    element.sender = cv.membros.find((el: any) => el._id === element.idSender);
+    element.sender = chatSelecionado.membros.find(
+      (el: any) => el._id === element.idSender
+    );
   });
   telaChats.value = false;
-  conversa.value = { ...cv, mensagens: newCv.mensagens };
+  conversa.value = { ...chatSelecionado, mensagens: newCv.mensagens };
 };
 
 const outroMembro = (conversa: any): { nome: string; imagemUrl: string } => {
@@ -34,12 +42,14 @@ const outroMembro = (conversa: any): { nome: string; imagemUrl: string } => {
 };
 
 const adicionarMensagem = (mensagem: any) => {
-  conversa.value.mensagens.push({
+  const novaMgs = {
     ...mensagem,
     sender: conversa.value.membros.find(
       (el: any) => el._id === mensagem.idSender
     ),
-  });
+  };
+  chatStore.conversas[chatStore.atual!].mensagens.push(novaMgs);
+  conversa.value.mensagens.push(novaMgs);
 };
 </script>
 

@@ -4,14 +4,15 @@ import PreviewChat from "./PreviewChat.vue";
 import { onMounted, ref, watch } from "vue";
 import { apiService } from "@/service/auth";
 import { useUserStore } from "@/stores/user";
+import { useChatStore } from "@/stores/chats";
 
+const chatStore = useChatStore();
 const userStore = useUserStore();
 const busca = ref("");
 const loading = ref(false);
 const emit = defineEmits(["selecionarConversa"]);
 
 let timeoutID: NodeJS.Timeout | null = null;
-const listaConversas = ref<any[]>([]);
 const userBuscado = ref({
   _id: "",
   nome: "",
@@ -58,7 +59,7 @@ const iniciarChat = async (userId: string) => {
   const conversa = await apiConversas.iniciarConversa(payload);
   const users = await obterUsuarios(conversa.conversas.membros);
   conversa.conversas.membros = users.user;
-  listaConversas.value.unshift(conversa.conversas);
+  chatStore.conversas.unshift(conversa.conversas);
   busca.value = "";
   emit("selecionarConversa", conversa.conversas);
 };
@@ -95,7 +96,7 @@ onMounted(async () => {
     );
     el.membros = membros;
   });
-  listaConversas.value = conversas.conversas;
+  chatStore.conversas = conversas.conversas;
   loading.value = false;
 });
 </script>
@@ -136,16 +137,16 @@ onMounted(async () => {
   </div>
   <div class="overflow-auto" v-else-if="!busca">
     <PreviewChat
-      v-for="conversa in listaConversas"
+      v-for="(conversa, index) in chatStore.conversas"
       :key="conversa._id"
       :nome="outroMembro(conversa).nome"
       :imagem="outroMembro(conversa).imagemUrl"
       :ultima="
         conversa.mensagens.length
-          ? conversa.mensagens[conversa.mensagens.length - 1].texto
-          : '-'
+          ? conversa.mensagens[conversa.mensagens.length - 1]
+          : undefined
       "
-      @click="emit('selecionarConversa', conversa)"
+      @click="emit('selecionarConversa', index)"
     ></PreviewChat>
   </div>
   <div class="overflow-auto" v-else-if="userBuscado._id">
@@ -157,4 +158,8 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style>
+.v-field {
+  border-radius: 0 !important;
+}
+</style>
