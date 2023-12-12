@@ -17,6 +17,12 @@ class conversasService extends AxiosCall {
       url: `${this.url}`,
     });
   }
+  obterChat(id: string) {
+    return this.axiosCall2({
+      method: "get",
+      url: `${this.url}/id/${id}`,
+    });
+  }
 
   iniciarConversa(data: IInicioConversa) {
     return this.axiosCall2({

@@ -37,10 +37,8 @@ const selecionarConversa = async (cv: number) => {
   loading.value = true;
   chatStore.atual = cv;
   const chatSelecionado = chatStore.conversas[chatStore.atual];
-  const conversas = await apiConversas.obterConversas();
-  const newCv = conversas.conversas.find(
-    (cvs: any) => cvs._id === chatSelecionado._id
-  );
+  const conversas = await apiConversas.obterChat(chatSelecionado._id);
+  const newCv = conversas.conversas[0];
   newCv.mensagens.forEach((element: any) => {
     element.sender = chatSelecionado.membros.find(
       (el: any) => el._id === element.idSender
