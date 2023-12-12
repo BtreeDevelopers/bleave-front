@@ -7,6 +7,7 @@ const { mobile } = useDisplay();
 const props = defineProps<{
   texto: string;
   time: string;
+  showImagem?: boolean;
 }>();
 
 const formateDate = computed(() => {
@@ -21,7 +22,12 @@ const formateDate = computed(() => {
 
 <template>
   <div class="d-flex flex-column align-end">
-    <p class="text-subtitle-2 text-gray1 text-end mr-5">{{ formateDate }}</p>
+    <p
+      class="text-subtitle-2 text-gray1 text-end mr-5"
+      style="font-size: 10px !important; line-height: 1rem"
+    >
+      {{ formateDate }}
+    </p>
 
     <div class="balao">
       <div
@@ -34,6 +40,7 @@ const formateDate = computed(() => {
         {{ texto }}
       </div>
       <svg
+        :style="{ opacity: showImagem ? 1 : 0 }"
         width="15"
         height="13"
         viewBox="0 0 15 13"

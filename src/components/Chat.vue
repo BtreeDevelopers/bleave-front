@@ -136,13 +136,16 @@ onMounted(async () => {
 
   <p class="text-subtitle-2 text-gray1 text-center mr-5 my-2">15 de Agosto</p>
   <div class="overflow-auto px-2 px-md-16 py-2 h-100" ref="listChat">
-    <template v-for="msg in props.mensagens">
+    <template v-for="(msg, index) in props.mensagens">
       <Balloon
         :texto="msg.texto"
         :time="msg.timestamps"
         :imagem="msg.sender.imagemUrl"
         :key="msg._id"
         v-if="msg.idSender !== userStore.userId"
+        :show-imagem="
+          index === 0 || props.mensagens[index - 1].idSender !== msg.idSender
+        "
       ></Balloon>
 
       <MyBalloon
@@ -150,6 +153,9 @@ onMounted(async () => {
         v-else
         :texto="msg.texto"
         :time="msg.timestamps"
+        :show-imagem="
+          index === 0 || props.mensagens[index - 1].idSender !== msg.idSender
+        "
       >
       </MyBalloon>
     </template>

@@ -8,6 +8,7 @@ const props = defineProps<{
   texto: string;
   time: string;
   imagem: string;
+  showImagem?: boolean;
 }>();
 
 const formateDate = computed(() => {
@@ -22,20 +23,29 @@ const formateDate = computed(() => {
 
 <template>
   <div>
-    <p class="text-subtitle-2 text-gray1 ml-16">{{ formateDate }}</p>
+    <p
+      class="text-subtitle-2 text-gray1 ml-16"
+      style="font-size: 10px !important; line-height: 1rem"
+    >
+      {{ formateDate }}
+    </p>
     <div class="d-flex">
-      <img
-        width="40px"
-        height="40px"
-        class="rounded-circle mr-2"
-        :src="imagem"
-        v-if="imagem"
-      />
-      <v-icon size="45px" class="rounded-circle" color="primary" v-else
-        >$UserCircleIcon</v-icon
-      >
+      <template v-if="showImagem">
+        <img
+          width="32px"
+          height="32px"
+          class="rounded-circle mr-2"
+          :src="imagem"
+          v-if="imagem"
+        />
+        <v-icon size="45px" class="rounded-circle" color="primary" v-else
+          >$UserCircleIcon</v-icon
+        >
+      </template>
+      <div v-else style="width: 40px"></div>
       <div class="balao">
         <svg
+          :style="{ opacity: showImagem ? 1 : 0 }"
           style="margin-right: -2px"
           width="15"
           height="13"
