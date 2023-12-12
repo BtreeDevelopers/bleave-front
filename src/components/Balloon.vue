@@ -7,7 +7,7 @@ const MAX_CARACTERES = 430;
 const props = defineProps<{
   texto: string;
   time: string | number;
-  imagem: string;
+  imagem?: string;
   showImagem?: boolean;
 }>();
 
@@ -39,7 +39,7 @@ const formateDate = computed(() => {
           :src="imagem"
           v-if="imagem"
         />
-        <v-icon size="45px" class="rounded-circle" color="primary" v-else
+        <v-icon size="38px" class="rounded-circle" color="primary" v-else
           >$UserCircleIcon</v-icon
         >
       </template>

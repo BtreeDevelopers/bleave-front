@@ -36,9 +36,16 @@ const wsid = ref("");
 const props = defineProps<{
   nome: string;
   chatid: string;
-  imagem: string;
+  imagem?: string;
   mensagens: any[];
 }>();
+
+watch(
+  () => props.chatid,
+  () => {
+    mensagem.value = "";
+  }
+);
 
 const emit = defineEmits(["adicionarMensagem", "voltar"]);
 const eventsWS = () => {
