@@ -5,7 +5,9 @@ import { onMounted, ref, watch } from "vue";
 import { apiService } from "@/service/auth";
 import { useUserStore } from "@/stores/user";
 import { useChatStore } from "@/stores/chats";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const chatStore = useChatStore();
 const userStore = useUserStore();
 const busca = ref("");
@@ -13,12 +15,9 @@ const loading = ref(false);
 const emit = defineEmits(["selecionarConversa"]);
 
 let timeoutID: NodeJS.Timeout | null = null;
-const userBuscado = ref({
-  _id: "",
-  nome: "",
-  imagemUrl: "",
-  email: "",
-});
+const usersBuscado = ref<
+  { _id: string; nome: string; imagemUrl: string; email: string }[]
+>([]);
 
 function debounce(fn: any, delay: number) {
   return function () {
@@ -35,20 +34,13 @@ watch(
   () => busca.value,
   (value) => {
     if (!value) {
-      userBuscado.value = {
-        _id: "",
-        nome: "",
-        imagemUrl: "",
-        email: "",
-      };
+      usersBuscado.value = [];
       return;
     }
     loading.value = true;
     debounce(async function () {
       const data = await apiService.getUser(busca.value, userStore.token_bauth);
-      if (data.user[0]) {
-        userBuscado.value = data.user[0];
-      }
+      usersBuscado.value = data.user;
       loading.value = false;
     }, 500)();
   }
@@ -101,10 +93,44 @@ onMounted(async () => {
   chatStore.conversas = conversas.conversas;
   loading.value = false;
 });
+const sair = () => {
+  userStore.logout();
+  router.push("/login");
+};
 </script>
 
 <template>
-  <p class="text-h5 font-weight-bold ml-6 my-5">Conversas</p>
+  <div
+    style="min-height: 72px"
+    class="d-flex align-center justify-space-between mx-7"
+  >
+    <img
+      width="40px"
+      height="40px"
+      class="rounded-circle mr-2"
+      :src="userStore.image"
+      v-if="userStore.image"
+    />
+    <v-icon size="42px" class="rounded-circle" color="primary" v-else
+      >$UserCircleIcon</v-icon
+    >
+    <VMenu>
+      <template v-slot:activator="{ props }">
+        <VIcon v-bind="props">$EllipsisVerticalIcon</VIcon>
+      </template>
+      <VCard color="#252831" class="py-2 px-4">
+        <p class="text-caption cursor-pointer py-1">Novo grupo</p>
+        <p class="text-caption cursor-pointer py-1">Mensagens favoritas</p>
+        <p class="text-caption cursor-pointer py-1">Selecionar conversas</p>
+        <p class="text-caption cursor-pointer py-1">Configurações</p>
+        <p class="text-caption cursor-pointer text-error py-1" @click="sair">
+          Sair
+        </p>
+      </VCard>
+    </VMenu>
+
+    <!-- <p class="text-h5 font-weight-bold ml-6 my-5">Conversas</p> -->
+  </div>
   <div>
     <VTextField
       flat
@@ -114,6 +140,7 @@ onMounted(async () => {
       hide-details="auto"
       class="mb-5 busca"
       v-model.lazy="busca"
+      placeholder="Pesquisar ou começar uma nova conversa"
     ></VTextField>
   </div>
   <div v-if="loading" class="d-flex align-center justify-center h-100">
@@ -153,11 +180,13 @@ onMounted(async () => {
       @click="emit('selecionarConversa', index)"
     ></PreviewChat>
   </div>
-  <div class="overflow-auto" v-else-if="userBuscado._id">
+  <div class="overflow-auto" v-else-if="usersBuscado.length">
     <PreviewChat
-      :nome="userBuscado.nome"
-      @click="iniciarChat(userBuscado._id)"
-      :imagem="userBuscado.imagemUrl"
+      v-for="user in usersBuscado"
+      :nome="user.nome"
+      @click="iniciarChat(user._id)"
+      :imagem="user.imagemUrl"
+      offline
     ></PreviewChat>
   </div>
 </template>
@@ -167,6 +196,9 @@ onMounted(async () => {
   border-radius: 0 !important;
 }
 .busca input {
-  font-size: 14px;
+  font-size: 12px;
+}
+.busca input::placeholder {
+  font-size: 10px !important;
 }
 </style>

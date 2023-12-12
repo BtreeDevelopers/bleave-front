@@ -5,6 +5,7 @@ const userStore = useUserStore();
 const props = withDefaults(
   defineProps<{
     selected?: boolean;
+    offline?: boolean;
     nome: string;
     imagem?: string;
     mensagens?: number;
@@ -70,7 +71,12 @@ const duracao = computed(() => {
   >
     <div class="d-flex align-center justify-space-between">
       <div class="d-flex align-center" style="overflow: hidden">
-        <VBadge color="success" dot location="bottom end" class="mr-3">
+        <VBadge
+          :color="offline ? 'transparent' : 'success'"
+          dot
+          location="bottom end"
+          class="mr-3"
+        >
           <img
             width="40px"
             height="40px"

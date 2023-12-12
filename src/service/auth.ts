@@ -15,10 +15,10 @@ class authService extends AxiosCall {
       },
     });
   }
-  getUser(email: string, token: string) {
+  getUser(nome: string, token: string) {
     return this.axiosCall({
       method: "get",
-      url: `/user/users/email/${email}`,
+      url: `/user/users/nome/${nome}`,
       headers: {
         secret: process.env.VUE_APP_SECRET,
         Authorization: "Bearer " + token,
