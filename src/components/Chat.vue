@@ -127,7 +127,7 @@ onMounted(async () => {
         >
       </VBadge>
       <div>
-        <p class="text-h6">{{ props.nome }}</p>
+        <p class="text-subtitle-1" style="font-size: 18px">{{ props.nome }}</p>
         <p class="text-subtitle-2 text-gray1">Online</p>
       </div>
     </div>
@@ -177,7 +177,7 @@ onMounted(async () => {
       rounded="0"
       variant="solo"
       density="compact"
-      class="mr-1"
+      class="mr-1 texto"
       bg-color="background2"
       hide-details="auto"
       v-model="mensagem"
@@ -190,4 +190,8 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style>
+.texto input {
+  font-size: 12px;
+}
+</style>

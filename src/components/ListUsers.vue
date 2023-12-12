@@ -46,7 +46,9 @@ watch(
     loading.value = true;
     debounce(async function () {
       const data = await apiService.getUser(busca.value, userStore.token_bauth);
-      userBuscado.value = data.user[0];
+      if (data.user[0]) {
+        userBuscado.value = data.user[0];
+      }
       loading.value = false;
     }, 500)();
   }
@@ -110,7 +112,7 @@ onMounted(async () => {
       bg-color="background"
       prepend-inner-icon="$MagnifyingGlassIcon"
       hide-details="auto"
-      class="mb-5"
+      class="mb-5 busca"
       v-model.lazy="busca"
     ></VTextField>
   </div>
@@ -163,5 +165,8 @@ onMounted(async () => {
 <style>
 .v-field {
   border-radius: 0 !important;
+}
+.busca input {
+  font-size: 14px;
 }
 </style>

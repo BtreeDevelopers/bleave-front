@@ -50,7 +50,7 @@ const formateDate = computed(() => {
         </svg>
 
         <div
-          class="rounded rounded-ts-0 bg-background2 pa-2"
+          class="rounded rounded-ts-0 bg-background2 pa-2 text-caption"
           style="min-height: 50px; word-break: break-all"
           :style="{
             width: mobile ? '240px' : '260px',

@@ -83,17 +83,17 @@ const duracao = computed(() => {
           >
         </VBadge>
         <div style="overflow: hidden">
-          <p class="text-h6">{{ nome }}</p>
+          <p class="text-subtitle-1" style="font-size: 18px">{{ nome }}</p>
           <div class="d-flex">
             <p v-if="ultima" class="d-flex">
               <span
                 v-if="userStore.userId === ultima.idSender"
-                class="text-subtitle-2 text-primary mr-1"
+                class="text-caption text-primary mr-1"
               >
                 Você:
               </span>
               <span
-                class="text-subtitle-2 text-gray1 mr-1"
+                class="text-caption text-gray1 mr-1"
                 style="
                   overflow: hidden;
                   white-space: nowrap;
@@ -103,7 +103,7 @@ const duracao = computed(() => {
               >
                 {{ ultima.texto }}
               </span>
-              <span class="text-subtitle-2 text-gray1"> • {{ duracao }} </span>
+              <span class="text-caption text-gray1"> • {{ duracao }} </span>
             </p>
           </div>
         </div>
