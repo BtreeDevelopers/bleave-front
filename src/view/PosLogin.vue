@@ -4,10 +4,9 @@ import { apibleave } from "@/service";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { descriptografar } from "@/plugins/encript";
-import { useUserStore } from "@/stores/user";
-
-const userStore = useUserStore();
+import { salvarToken } from "@/service/user";
 const route = useRoute();
+
 const router = useRouter();
 const error = ref(false);
 const loading = ref(false);
@@ -20,13 +19,16 @@ const user = computed(() => {
 
 const loginApi = async (userId: string, token: string) => {
   const data = await apibleave.login({ userId, token });
-  userStore.email = data.email;
-  userStore.token = data.token_bleave;
-  userStore.token_bauth = data.bauth_token;
-  userStore.userId = data._id;
-  userStore.name = data.nome;
-  userStore.image = data.imagemUrl;
-  userStore.theme = data.tema;
+  const payload = {
+    email: data.email,
+    token: data.token_bleave,
+    token_bauth: data.bauth_token,
+    userId: data._id,
+    name: data.nome,
+    image: data.imagemUrl,
+    theme: data.tema,
+  };
+  salvarToken(payload);
   router.push("/");
 };
 

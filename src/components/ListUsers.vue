@@ -3,13 +3,12 @@ import { apiConversas } from "@/service/conversas";
 import PreviewChat from "./PreviewChat.vue";
 import { onMounted, ref, watch } from "vue";
 import { apiService } from "@/service/auth";
-import { useUserStore } from "@/stores/user";
 import { useChatStore } from "@/stores/chats";
 import { useRouter } from "vue-router";
+import { obterUserData, removerTokenCookies } from "@/service/user";
 
 const router = useRouter();
 const chatStore = useChatStore();
-const userStore = useUserStore();
 const busca = ref("");
 const loading = ref(false);
 const emit = defineEmits(["selecionarConversa"]);
@@ -39,7 +38,8 @@ watch(
     }
     loading.value = true;
     debounce(async function () {
-      const data = await apiService.getUser(busca.value, userStore.token_bauth);
+      const userData = obterUserData();
+      const data = await apiService.getUser(busca.value, userData.token_bauth);
       usersBuscado.value = data.user;
       loading.value = false;
     }, 500)();
@@ -60,9 +60,8 @@ const iniciarChat = async (userId: string) => {
 const outroMembro = (conversa: any): { nome: string; imagemUrl: string } => {
   if (conversa.membros.length > 2)
     return { nome: conversa.nomeChat, imagemUrl: "" };
-  const chat = conversa.membros.filter(
-    (el: any) => el._id !== userStore.userId
-  );
+  const userData = obterUserData();
+  const chat = conversa.membros.filter((el: any) => el._id !== userData.userId);
   return chat[0];
 };
 
@@ -74,27 +73,11 @@ const obterUsuarios = async (listusers: string[]) => {
 };
 onMounted(async () => {
   loading.value = true;
-  const conversas = await apiConversas.obterConversas();
-  const todosMembros = [
-    ...new Set<string>(
-      conversas.conversas.reduce((lista: string[], value: any) => {
-        lista.push(...value.membros);
-        return lista;
-      }, [])
-    ),
-  ];
-  const users = await obterUsuarios(todosMembros);
-  conversas.conversas.forEach((el: any) => {
-    const membros = el.membros.map((mb: string) =>
-      users.user.find((user) => user._id === mb)
-    );
-    el.membros = membros;
-  });
-  chatStore.conversas = conversas.conversas;
+  await chatStore.carregarTudo();
   loading.value = false;
 });
 const sair = () => {
-  userStore.logout();
+  removerTokenCookies();
   router.push("/login");
 };
 </script>
@@ -108,8 +91,8 @@ const sair = () => {
       width="40px"
       height="40px"
       class="rounded-circle mr-2"
-      :src="userStore.image"
-      v-if="userStore.image"
+      :src="obterUserData().image"
+      v-if="obterUserData().image"
     />
     <v-icon size="42px" class="rounded-circle" color="primary" v-else
       >$UserCircleIcon</v-icon

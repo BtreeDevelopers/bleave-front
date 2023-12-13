@@ -2,8 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../view/Home.vue";
 import Login from "../view/Login.vue";
 import PosLogin from "../view/PosLogin.vue";
-import { useUserStore } from "@/stores/user";
-import { pinia } from "@/main";
+import { obterUserData } from "@/service/user";
 
 const routes: RouteRecordRaw[] = [
   { path: "/", component: Home },
@@ -24,11 +23,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to, _, next) => {
-  const loginStore = useUserStore(pinia);
-  if (to.path === "/" && !loginStore.isLogged) {
+  const userData = obterUserData(false);
+  if (to.path === "/" && !userData) {
     return next("/login");
   }
-  if (["/login"].includes(to.path) && loginStore.isLogged) {
+  if (["/login"].includes(to.path) && userData) {
     return next("/");
   }
 

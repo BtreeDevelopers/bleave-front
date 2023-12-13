@@ -1,12 +1,13 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { obterUserData, removerTokenCookies } from "@/service/user";
+
 const http = axios.create({
   baseURL: `${process.env.VUE_APP_API_URL}`,
 });
 
 http.interceptors.request.use(async (config) => {
-  const { useUserStore } = await import("@/stores/user");
-  const auth = useUserStore();
-  const token = auth.token;
+  const userData = obterUserData();
+  const token = userData.token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -17,9 +18,7 @@ http.interceptors.response.use(
   (l) => l,
   async (error) => {
     if (error.response && error.response.status === 401) {
-      const { useUserStore } = await import("@/stores/user");
-      const auth = useUserStore();
-      auth.logout();
+      removerTokenCookies();
       const { useRouter } = await import("vue-router");
       const router = useRouter();
       router.push("/login");

@@ -3,23 +3,16 @@ import { ref, onMounted, watch } from "vue";
 import Balloon from "./Balloon.vue";
 import MyBalloon from "./MyBalloon.vue";
 import { useDisplay } from "vuetify";
-import { Conection } from "@/service/ws";
-import { apibleave } from "@/service";
-import { useUserStore } from "@/stores/user";
-import notificacao from "@/assets/notificacao.mp3";
+import { obterUserData } from "@/service/user";
+import { useChatStore } from "@/stores/chats";
 
-const userStore = useUserStore();
+const chatStore = useChatStore();
+
+const dataUser = obterUserData();
 
 const { mobile } = useDisplay();
 
 const listChat = ref<HTMLElement | null>(null);
-enum ListStatus {
-  "closed",
-  "open",
-  "error",
-}
-const statusWS = ref(ListStatus.closed);
-const conexao = ref<Conection | null>(null);
 
 const MAXCARACTERES = 6000;
 
@@ -31,13 +24,17 @@ watch(
       mensagem.value = mensagem.value.substring(0, MAXCARACTERES);
   }
 );
-const wsid = ref("");
 
 const props = defineProps<{
   nome: string;
   chatid: string;
   imagem?: string;
   mensagens: any[];
+  enviarMensagem: (payload: {
+    idConversa: string;
+    idSender: string;
+    texto: string;
+  }) => void;
 }>();
 
 watch(
@@ -46,59 +43,33 @@ watch(
     mensagem.value = "";
   }
 );
+watch(
+  () => props.mensagens.length,
+  () => {
+    setTimeout(() => {
+      scrollEnd();
+    }, 2);
+  }
+);
 
 const emit = defineEmits(["adicionarMensagem", "voltar"]);
-const eventsWS = () => {
-  conexao.value!.ws.addEventListener("open", () => {
-    statusWS.value = ListStatus.open;
-  });
-  conexao.value!.ws.addEventListener("error", () => {
-    //RECONECTAR :(
-    statusWS.value = ListStatus.error;
-  });
-  conexao.value!.ws.addEventListener("close", () => {
-    statusWS.value = ListStatus.closed;
-  });
-  conexao.value!.ws.addEventListener("message", (event) => {
-    if (statusWS.value !== ListStatus.open) return;
-    const data = JSON.parse(event.data);
-    switch (data.status) {
-      case 0:
-        wsid.value = data.id;
-        break;
-      case 1:
-        const payload = {
-          _id: Date.now(),
-          timestamps: data.timestamps,
-          idConversa: data.idConversa,
-          texto: data.texto,
-          idSender: data.idSender,
-        };
-        var audio = new Audio(notificacao);
-        audio.play();
-        emit("adicionarMensagem", payload);
-        setTimeout(() => {
-          scrollEnd();
-        }, 2);
-        break;
-    }
-  });
-};
+
 const enviarMensagem = () => {
   if (!mensagem.value) return;
   const payload = {
     idConversa: props.chatid,
-    idSender: wsid.value,
+    idSender: chatStore.wsid,
     texto: mensagem.value,
   };
-  conexao.value!.ws.send(JSON.stringify(payload));
+  props.enviarMensagem(payload);
+
   var dataAtual = new Date();
   var dataFormatada = dataAtual.toISOString();
   emit("adicionarMensagem", {
     ...payload,
     timestamps: dataFormatada,
     _id: Date.now(),
-    idSender: userStore.userId,
+    idSender: dataUser.userId,
   });
   mensagem.value = "";
   setTimeout(() => {
@@ -110,9 +81,6 @@ const scrollEnd = () => {
 };
 onMounted(async () => {
   scrollEnd();
-  const token = await apibleave.csrf({ bauthToken: userStore.token_bauth });
-  conexao.value = new Conection(token.csfr, userStore.userId);
-  eventsWS();
 });
 </script>
 
@@ -161,7 +129,7 @@ onMounted(async () => {
         :time="msg.timestamps"
         :imagem="msg.sender.imagemUrl"
         :key="msg._id"
-        v-if="msg.idSender !== userStore.userId"
+        v-if="msg.idSender !== dataUser.userId"
         :show-imagem="
           index === 0 || props.mensagens[index - 1].idSender !== msg.idSender
         "
