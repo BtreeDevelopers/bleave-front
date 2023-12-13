@@ -1,4 +1,4 @@
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useChatStore } from "@/stores/chats";
 import notificacao from "@/assets/notificacao.mp3";
 
