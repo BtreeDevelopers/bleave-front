@@ -52,6 +52,7 @@ const iniciarChat = async (userId: string) => {
   };
   const conversa = await apiConversas.iniciarConversa(payload);
   const users = await obterUsuarios(conversa.conversas.membros);
+  conversa.conversas.naoLidas = 0;
   conversa.conversas.membros = users.user;
   chatStore.conversas.unshift(conversa.conversas);
   busca.value = "";
@@ -160,6 +161,7 @@ const sair = () => {
           : undefined
       "
       :selected="chatStore.atual === index"
+      :mensagens="conversa.naoLidas"
       @click="emit('selecionarConversa', index)"
     ></PreviewChat>
   </div>

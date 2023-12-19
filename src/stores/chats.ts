@@ -18,6 +18,7 @@ interface IChat {
   _id: string;
   membros: IMembro[];
   mensagens: IMensagem[];
+  naoLidas: number;
   nomeChat: string;
 }
 export const useChatStore = defineStore("user", {
@@ -45,6 +46,7 @@ export const useChatStore = defineStore("user", {
           (el: any) => el._id === element.idSender
         );
       });
+      this.conversas[this.atual].naoLidas = 0;
       this.conversas[this.atual].mensagens = conversaAtualizada.mensagens;
     },
     reordenarChats() {
@@ -84,6 +86,9 @@ export const useChatStore = defineStore("user", {
         ),
       };
       this.conversas[chatRecebido].mensagens.push(novaMgs);
+      if (this.atual !== chatRecebido) {
+        this.conversas[chatRecebido].naoLidas += 1;
+      }
       this.reordenarChats();
       return novaMgs;
     },
@@ -111,6 +116,7 @@ export const useChatStore = defineStore("user", {
         const membros = el.membros.map((mb: string) =>
           users.user.find((user) => user._id === mb)
         );
+        el.naoLidas = 0;
         el.membros = membros;
       });
       this.conversas = conversas.conversas;
