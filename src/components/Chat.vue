@@ -121,7 +121,7 @@ onMounted(async () => {
     <p v-if="!mobile"><b>b</b>Leave</p>
   </div>
 
-  <p class="text-subtitle-2 text-gray1 text-center mr-5 my-2">15 de Agosto</p>
+  <p class="text-subtitle-2 text-gray1 text-center mr-5 my-2"></p>
   <div class="overflow-auto px-2 px-md-16 py-2 h-100" ref="listChat">
     <template v-for="(msg, index) in props.mensagens">
       <Balloon
