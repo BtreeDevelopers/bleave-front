@@ -176,6 +176,7 @@ onMounted(async () => {
       v-model="mensagem"
       @keyup.enter="enviarMensagem"
       placeholder="Escreva uma mensagem..."
+      autofocus
     ></VTextField>
     <VBtn color="background2" rounded="0" height="40" @click="enviarMensagem">
       <VIcon color="primary" size="24">$PaperAirplaneIcon</VIcon>
